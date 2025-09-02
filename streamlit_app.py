@@ -1,9 +1,11 @@
 import streamlit as st
-import datetime
 import requests
+import datetime
+
+# from exception.exceptions import TradingBotException
 import sys
 
-BASE_URL = "http://localhost:8000" # Backend endpoint
+BASE_URL = "http://localhost:8000"  # Backend endpoint
 
 st.set_page_config(
     page_title="🌍 Travel Planner Agentic Application",
@@ -18,17 +20,18 @@ st.title("🌍 Travel Planner Agentic Application")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Display chat history
+st.header("How can I help you in planning a trip? Let me know where do you want to visit.")
 
-st.header("How can I help you in planning atrip? Let me know where do you want to visit?")
-
-with st.form(key = "query_form", clear_on_submit=True):
-    user_input = st.text_input("User Input", placeholder = "e.g, Plan a trip to Goa for 5 days")
+# Chat input box at bottom
+with st.form(key="query_form", clear_on_submit=True):
+    user_input = st.text_input("User Input", placeholder="e.g. Plan a trip to Goa for 5 days")
     submit_button = st.form_submit_button("Send")
 
 if submit_button and user_input.strip():
     try:
         # # Show user message
-        # Show thinking spinner while backend processess
+        # Show thinking spinner while backend processes
         with st.spinner("Bot is thinking..."):
             payload = {"question": user_input}
             response = requests.post(f"{BASE_URL}/query", json=payload)
@@ -53,4 +56,4 @@ if submit_button and user_input.strip():
             st.error(" Bot failed to respond: " + response.text)
 
     except Exception as e:
-        raise f"The response failed due to {e}"
+        raise Exception(f"The response failed due to {e}")
